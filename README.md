@@ -60,7 +60,7 @@ Desenvolver um protótipo de farmácia inteligente utilizando Arduino, capaz de 
 
 O circuito completo foi projetado e validado no Tinkercad antes da montagem física.
 
-🔗 **Link da simulação:** [Projeto no Tinkercad]([https://www.tinkercad.com](https://www.tinkercad.com/things/ftH33SuNnAO-medcontrol?sharecode=Piq3hywgwHqZxrc1wp1MAs9D1p_18CyBY3xNzeBqxWE))
+🔗 **Link da simulação:** [Projeto no Tinkercad](https://www.tinkercad.com/things/ftH33SuNnAO-medcontrol?sharecode=Piq3hywgwHqZxrc1wp1MAs9D1p_18CyBY3xNzeBqxWE))
 
 ![Diagrama esquemático](img/diagrama_esquematico.png)
 
