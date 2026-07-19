@@ -2,7 +2,7 @@
 
 Protótipo de farmácia inteligente construído com Arduino Uno, desenvolvido para auxiliar usuários na administração correta de medicamentos. O sistema aciona automaticamente a abertura de um compartimento no horário do medicamento, emite alertas sonoros e visuais, e só fecha depois que o usuário confirma a dose por meio de um botão físico.
 
-![Montagem física do MedControl](img/montagem-fisica.png)
+![Montagem física do MedControl](img/montagem-fisica.jpg)
 
 ---
 
