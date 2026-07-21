@@ -1,0 +1,676 @@
+\documentclass[11pt,a4paper]{article}
+
+% ============================================================
+%  MEDCONTROL — Documentação Técnica de Produto
+%  Farmácia Inteligente | Relatório de Projeto
+% ============================================================
+
+\usepackage[a4paper,margin=2.2cm,top=2.8cm,bottom=2.8cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,shadows,calc}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+\usepackage[section]{placeins}
+
+% Ícones leves (substituem fontawesome5, evitando dependências indisponíveis)
+\newcommand{\iInfo}{\textbf{\textcolor{white}{(i)}}}
+\newcommand{\iWarn}{\textbf{\textcolor{white}{!}}}
+\newcommand{\iChip}{\textbf{\textcolor{mcTealDark}{\#}}}
+\newcommand{\iCheck}{\textbf{\textcolor{white}{\checkmark}}}
+\newcommand{\iImage}{\textcolor{mcGray}{$\square$}}
+\newcommand{\iGit}{\textbf{\textcolor{mcTealDark}{\textless/\textgreater}}}
+\usepackage{multicol}
+\usepackage{parskip}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{multirow}
+
+% ------------------------------------------------------------
+% Paleta de cores do produto — tema "saúde / farmácia inteligente"
+% ------------------------------------------------------------
+\definecolor{mcTeal}{HTML}{0E7C7B}      % cor primária
+\definecolor{mcTealDark}{HTML}{0A5C5B}  % primária escura
+\definecolor{mcMint}{HTML}{17BEBB}      % destaque
+\definecolor{mcCoral}{HTML}{FF6B6B}     % alerta / atenção
+\definecolor{mcAmber}{HTML}{F2A65A}     % aviso
+\definecolor{mcGray}{HTML}{4A5568}      % texto secundário
+\definecolor{mcLight}{HTML}{F4FAF9}     % fundo claro
+\definecolor{mcLine}{HTML}{D8E8E6}      % linhas/bordas suaves
+
+% ------------------------------------------------------------
+% Hyperlinks
+% ------------------------------------------------------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=mcTealDark,
+    urlcolor=mcTeal,
+    citecolor=mcTeal,
+    pdftitle={MedControl - Documentacao do Projeto},
+    pdfauthor={Equipe MedControl},
+    pdfsubject={Farmacia Inteligente - Relatorio de Projeto}
+}
+
+% ------------------------------------------------------------
+% Cabeçalho / Rodapé estilo "documentação de produto"
+% ------------------------------------------------------------
+\pagestyle{fancy}
+\setlength{\headheight}{23pt}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyheadoffset{0pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{mcLine}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{mcLine}\leaders\hrule height \footrulewidth\hfill}}
+
+\fancyhead[L]{\small\color{mcGray}\textbf{MedControl}\,\textcolor{mcLine}{|}\,Farmácia Inteligente}
+\fancyhead[R]{\small\color{mcGray}\leftmark}
+\fancyfoot[L]{\small\color{mcGray}Documentação Técnica do Projeto}
+\fancyfoot[R]{\small\color{mcGray}Página \thepage\ de \pageref{LastPage}}
+\usepackage{lastpage}
+
+% ------------------------------------------------------------
+% Estilo de seções — visual "documentação"
+% ------------------------------------------------------------
+\titleformat{\section}
+  {\Large\bfseries\color{mcTealDark}}
+  {\colorbox{mcTeal}{\makebox[1.1cm]{\color{white}\thesection}}}
+  {0.4em}
+  {}
+\titlespacing*{\section}{0pt}{1.6em}{1em}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{mcTealDark}}
+  {\thesubsection}
+  {0.6em}
+  {}
+\titlespacing*{\subsection}{0pt}{1.2em}{0.6em}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{mcGray}}
+  {\thesubsubsection}
+  {0.5em}
+  {}
+
+% ------------------------------------------------------------
+% Caixas estilo "documentação de produto" (nota, dica, especificação)
+% ------------------------------------------------------------
+\newtcolorbox{infobox}[1][]{
+  enhanced, breakable, colback=mcLight, colframe=mcTeal,
+  boxrule=0.6pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  arc=2pt, boxsep=2pt,
+  title={\iInfo\ #1}, fonttitle=\bfseries\color{white},
+  coltitle=white, colbacktitle=mcTeal,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={boxrule=0pt, arc=2pt, colback=mcTeal}
+}
+
+\newtcolorbox{warnbox}[1][]{
+  enhanced, breakable, colback=mcLight, colframe=mcAmber,
+  boxrule=0.6pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  arc=2pt, boxsep=2pt,
+  title={\iWarn\ #1}, fonttitle=\bfseries\color{white},
+  coltitle=white, colbacktitle=mcAmber,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={boxrule=0pt, arc=2pt, colback=mcAmber}
+}
+
+\newtcolorbox{specbox}[1][Especificação]{
+  enhanced, breakable, colback=white, colframe=mcLine,
+  boxrule=0.8pt, left=8pt, right=8pt, top=6pt, bottom=6pt, arc=2pt,
+  title={\iChip\ #1}, fonttitle=\bfseries\color{mcTealDark},
+  coltitle=mcTealDark, colbacktitle=mcLight,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={boxrule=0.8pt,colframe=mcLine, arc=2pt, colback=mcLight}
+}
+
+\newtcolorbox{resultbox}[1][Resultado]{
+  enhanced, breakable, colback=mcLight, colframe=mcMint,
+  boxrule=0.8pt, left=8pt, right=8pt, top=6pt, bottom=6pt, arc=2pt,
+  title={\iCheck\ #1}, fonttitle=\bfseries\color{white},
+  coltitle=white, colbacktitle=mcMint,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={boxrule=0pt, arc=2pt, colback=mcMint}
+}
+
+% ------------------------------------------------------------
+% Código-fonte (estilo listing)
+% ------------------------------------------------------------
+\lstdefinestyle{arduino}{
+  backgroundcolor=\color{mcLight},
+  basicstyle=\ttfamily\small\color{mcGray},
+  keywordstyle=\color{mcTealDark}\bfseries,
+  commentstyle=\color{mcMint}\itshape,
+  stringstyle=\color{mcCoral},
+  numbers=left, numberstyle=\tiny\color{mcGray},
+  frame=single, rulecolor=\color{mcLine},
+  breaklines=true, tabsize=2, showstringspaces=false,
+  literate=
+    {á}{{\'a}}1 {à}{{\`a}}1 {ã}{{\~a}}1 {â}{{\^a}}1
+    {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1
+    {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c c}}1
+    {Á}{{\'A}}1 {À}{{\`A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1
+    {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1
+    {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c C}}1
+}
+
+% ------------------------------------------------------------
+% Placeholder de imagem (para o time inserir fotos depois)
+% ------------------------------------------------------------
+\newcommand{\imgplaceholder}[2][8cm]{%
+  \begin{center}
+  \begin{tikzpicture}
+    \node[draw=mcLine, line width=1pt, dashed, fill=mcLight,
+          minimum width=#1, minimum height=3.4cm, rounded corners=4pt] (box) {};
+    \node[color=mcGray, align=center, font=\small] at (box) {\iImage\ \\[4pt] #2 \\ \textit{(inserir imagem aqui)}};
+  \end{tikzpicture}
+  \end{center}
+}
+
+% ------------------------------------------------------------
+% Slot de imagem "inteligente": já vem com o nome do arquivo
+% esperado (dentro da pasta img/). Basta subir o arquivo com
+% esse nome exato no Overleaf que a imagem aparece sozinha;
+% enquanto o arquivo não existir, mostra uma caixa indicando
+% qual nome usar.
+%
+% CORREÇÃO: placement fixado em [H] (via pacote float) para que
+% cada imagem fique exatamente onde foi inserida no texto, sem
+% "flutuar" para outras seções/páginas.
+% ------------------------------------------------------------
+\newcommand{\projimg}[3][0.85\textwidth]{%
+  \begin{figure}[H]
+  \centering
+  \IfFileExists{img/#2}{%
+    \includegraphics[width=#1]{img/#2}%
+    \caption{#3}%
+  }{%
+    \begin{tikzpicture}
+      \node[draw=mcLine, line width=1pt, dashed, fill=mcLight,
+            minimum width=#1, minimum height=3.4cm, rounded corners=4pt] (box) {};
+      \node[color=mcGray, align=center, font=\small] at (box)
+        {\iImage\ \\[4pt] #3 \\ \textit{arquivo esperado:} \texttt{img/#2}};
+    \end{tikzpicture}%
+  }%
+  \end{figure}%
+  \FloatBarrier
+}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+% ============================================================
+\begin{document}
+
+% ---------------- CAPA (estilo folha de produto) ----------------
+\begin{titlepage}
+\newgeometry{margin=0cm}
+\begin{tikzpicture}[remember picture, overlay]
+  \path (current page.north west) -- (current page.north east)
+        coordinate[pos=0] (nw) coordinate[pos=1] (ne);
+  \fill[mcTeal] (nw) rectangle ($(ne)+(0,-9.5cm)$);
+  \fill[mcTealDark] ($(nw)+(0,-9.25cm)$) rectangle ($(ne)+(0,-9.5cm)$);
+
+  % ícone tipo "comprimido / cápsula" no topo
+  \node[anchor=north, yshift=-1.6cm] at (current page.north) {
+    \begin{tikzpicture}
+      \draw[fill=white, draw=none] (-0.9,0) -- (0.9,0) arc (-90:90:0.55) -- (-0.9,1.1) arc (90:270:0.55) -- cycle;
+      \draw[fill=mcMint, draw=none] (0,-0.55) rectangle (0.9,0.65) ;
+      \clip (-0.9,0) -- (0.9,0) arc (-90:90:0.55) -- (-0.9,1.1) arc (90:270:0.55) -- cycle;
+      \fill[mcMint] (0,-0.6) rectangle (1,1.2);
+    \end{tikzpicture}
+  };
+
+  \node[anchor=north, yshift=-3.6cm, text=white, font=\bfseries\fontsize{34}{34}\selectfont] at (current page.north) {MedControl};
+  \node[anchor=north, yshift=-4.6cm, text=mcLight, font=\Large] at (current page.north) {Farmácia Inteligente};
+  \node[anchor=north, yshift=-5.35cm, text=white!85, font=\normalsize] at (current page.north) {\iChip\ Sistema embarcado para administração automatizada de medicamentos};
+
+  \node[anchor=north, yshift=-7.1cm, draw=white, line width=1pt, rounded corners=2pt, inner sep=6pt, text=white, font=\small\bfseries] at (current page.north) {DOCUMENTAÇÃO TÉCNICA \ \textbullet\ VERSÃO 1.0};
+\end{tikzpicture}
+
+\vspace*{10.6cm}
+
+\begin{center}
+{\LARGE\bfseries\color{mcTealDark} Relatório de Projeto}\\[0.3cm]
+{\large\color{mcGray} Sistemas Embarcados aplicados à Saúde}
+\end{center}
+
+\vspace{1.0cm}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{} l l @{}}
+\textbf{\color{mcTealDark}Produto:} & MedControl -- Protótipo de Farmácia Inteligente \\
+\textbf{\color{mcTealDark}Plataforma:} & Arduino Uno R3 \\
+\textbf{\color{mcTealDark}Prototipagem:} & Tinkercad (simulação) + Maquete física \\
+\textbf{\color{mcTealDark}Disciplina:} & Técnicas de Programação \\
+\textbf{\color{mcTealDark}Semestre:} & 2026.1 \\
+\textbf{\color{mcTealDark}Professor(a):} & Prof. Fabrício da Costa Dias \\
+\textbf{\color{mcTealDark}Data de entrega:} & 21/07/2026 \\
+\end{tabular}
+\end{center}
+
+\vspace{0.cm}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{} l l @{}}
+\multirow{7}{*}{\textbf{\color{mcTealDark}Equipe:}}
+ & Conceição Tayná Medeiros da Silva \\
+ & Gislane Araújo Silva \\
+ & Luan Lopes dos Santos \\
+ & Rafael Esdras Nascimento Soares \\
+ & Viviane Freire Gomes \\
+ & Wendell Gomes dos Reis \\
+ & Yago Vinícius dos Santos Holanda \\
+\end{tabular}
+\end{center}
+
+\vspace{2.0 cm}
+
+\begin{center}
+\color{mcGray}\small \iGit\ Repositório do código-fonte disponível na Seção 7
+\end{center}
+
+\restoregeometry
+\end{titlepage}
+
+% ---------------- SUMÁRIO ----------------
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introdução}
+% ============================================================
+
+O \textbf{MedControl} é um protótipo de farmácia inteligente desenvolvido com Arduino, projetado para auxiliar usuários na administração correta de medicamentos. O sistema aciona a abertura do compartimento de medicação por meio de um servomotor e emite alertas sonoros e visuais para lembrar o usuário do momento da dose, aguardando a confirmação manual por botão antes de fechar o compartimento novamente.
+
+Este documento apresenta a especificação técnica, a arquitetura e os resultados do desenvolvimento do produto, seguindo um formato de documentação técnica para facilitar consulta e manutenção futura.
+
+\subsection{Objetivo Geral}
+
+\begin{infobox}[Objetivo do Produto]
+Desenvolver um protótipo de farmácia inteligente utilizando Arduino, capaz de auxiliar usuários na administração correta de medicamentos por meio da automação da abertura do compartimento e da emissão de alertas sonoros e visuais.
+\end{infobox}
+
+\subsection{Objetivos Específicos}
+
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item Aplicar conceitos de sistemas embarcados no desenvolvimento de um produto funcional.
+  \item Desenvolver um sistema automatizado para alerta e liberação de medicamentos.
+  \item Integrar sensores e atuadores em uma única solução coesa.
+  \item Construir uma maquete física utilizando materiais recicláveis.
+  \item Simular o funcionamento completo no Tinkercad antes da implementação física.
+  \item Demonstrar uma aplicação prática da automação na área da saúde.
+\end{itemize}
+
+\subsection{Escopo do Produto}
+
+\begin{specbox}[Visão Geral]
+\begin{tabularx}{\linewidth}{@{}l Y@{}}
+\textbf{Nome do produto} & MedControl \\
+\textbf{Categoria} & Dispositivo embarcado de assistência à saúde \\
+\textbf{Público-alvo} & Pacientes com tratamentos de múltiplos horários, idosos, cuidadores \\
+\textbf{Plataforma de hardware} & Arduino Uno R3 \\
+\textbf{Ambiente de prototipagem} & Tinkercad (simulação) \\
+\textbf{Status} & Protótipo funcional / maquete \\
+\end{tabularx}
+\end{specbox}
+
+\newpage
+% ============================================================
+\section{Materiais e Equipamentos Utilizados}
+% ============================================================
+
+Esta seção documenta todos os componentes de hardware e materiais estruturais utilizados na construção do MedControl, de acordo com a lista de materiais (BOM) da simulação final no Tinkercad.
+
+\subsection{Componentes Eletrônicos (Hardware)}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\linewidth}{@{}l Y c@{}}
+\toprule
+\textbf{Componente} & \textbf{Função no sistema} & \textbf{Qtd.} \\
+\midrule
+Arduino Uno R3 & Unidade central de processamento & 1 \\
+Display LCD 16x2 & Exibição de informações ao usuário & 1 \\
+Potenciômetro 5~k$\Omega$ & Ajuste de contraste do LCD & 1 \\
+Servomotor (posicional) & Abertura/fechamento do compartimento & 1 \\
+Piezo (buzzer) & Alerta sonoro & 1 \\
+LED vermelho & Sinalização visual do alerta & 1 \\
+Resistor 220~$\Omega$ & Proteção do LED / circuito & 2 \\
+Push Button & Confirmação de dose tomada & 1 \\
+Protoboard & Montagem do circuito & 1 \\
+Jumpers & Conexões elétricas & — \\
+\bottomrule
+\end{tabularx}
+\caption{Lista de componentes eletrônicos do MedControl (conforme BOM da simulação no Tinkercad).}
+\end{table}
+
+\begin{infobox}[Nota sobre o hardware]
+Na simulação, o alerta sonoro é reproduzido por um \textbf{piezo}. Na montagem física do protótipo, esse mesmo componente é substituído por um \textbf{buzzer}, mantendo a mesma função e a mesma lógica de acionamento no firmware. Todos os demais componentes e conexões são idênticos entre a simulação e a maquete física.
+\end{infobox}
+
+\subsection{Materiais da Estrutura Física}
+
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item Papelão reciclado
+  \item Cola quente
+  \item Fita adesiva
+  \item Palitos de churrasco
+  \item Papel contact
+\end{itemize}
+
+\begin{infobox}[Sustentabilidade]
+A estrutura da maquete prioriza materiais recicláveis e de baixo custo, reforçando a viabilidade do protótipo e a consciência ambiental no processo de prototipagem.
+\end{infobox}
+
+\FloatBarrier
+\newpage
+% ============================================================
+\section{Projeto no Tinkercad}
+% ============================================================
+
+\subsection{Simulação no Tinkercad}
+
+O circuito completo foi projetado e validado na plataforma Tinkercad antes da montagem física, permitindo testar a lógica de controle sem riscos de dano aos componentes. A simulação final é composta por um Arduino Uno R3, um display LCD 16x2 (com potenciômetro para ajuste de contraste), um servomotor, um LED indicador, um piezo (buzzer) e um botão de confirmação, todos montados em protoboard.
+
+\begin{figure}[H]
+\centering
+\IfFileExists{img/montagem_tinkercad.png}{%
+  \includegraphics[width=0.92\textwidth]{img/montagem_tinkercad.png}%
+}{%
+  \begin{tikzpicture}
+    \node[draw=mcLine, line width=1pt, dashed, fill=mcLight,
+          minimum width=0.92\textwidth, minimum height=4cm, rounded corners=4pt] (box) {};
+    \node[color=mcGray, align=center, font=\small] at (box)
+      {\iImage\ \\[4pt] Montagem eletrônica do MedControl no Tinkercad \\ \textit{arquivo esperado:} \texttt{img/montagem\_tinkercad.png}};
+  \end{tikzpicture}%
+}
+\caption{Montagem eletrônica do MedControl simulada no Tinkercad.}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[H]
+\centering
+\IfFileExists{img/diagrama_esquematico.png}{%
+  \includegraphics[width=0.92\textwidth]{img/diagrama_esquematico.png}%
+}{%
+  \begin{tikzpicture}
+    \node[draw=mcLine, line width=1pt, dashed, fill=mcLight,
+          minimum width=0.92\textwidth, minimum height=4cm, rounded corners=4pt] (box) {};
+    \node[color=mcGray, align=center, font=\small] at (box)
+      {\iImage\ \\[4pt] Diagrama esquemático do circuito completo \\ \textit{arquivo esperado:} \texttt{img/diagrama\_esquematico.png}};
+  \end{tikzpicture}%
+}
+\caption{Diagrama esquemático do circuito completo do MedControl.}
+\end{figure}
+\FloatBarrier
+
+\subsection{Mapeamento de Pinos}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.8\linewidth}{@{}Y c@{}}
+\toprule
+\textbf{Componente} & \textbf{Pino} \\
+\midrule
+Servomotor (sinal) & D9 \\
+Piezo / Buzzer & D10 \\
+LED indicador & D8 \\
+Botão de confirmação & D7 \\
+LCD -- RS & D12 \\
+LCD -- Enable (E) & D11 \\
+LCD -- D4 & D5 \\
+LCD -- D5 & D4 \\
+LCD -- D6 & D3 \\
+LCD -- D7 & D2 \\
+\bottomrule
+\end{tabularx}
+\caption{Mapeamento de pinos do Arduino Uno.}
+\end{table}
+
+\subsection{Fluxo de Funcionamento}
+
+O diagrama a seguir resume a lógica de operação do sistema, desde o disparo do alerta até a confirmação manual da dose pelo usuário.
+
+\begin{figure}[H]
+\centering
+\resizebox{!}{0.62\textheight}{
+\begin{tikzpicture}[
+  node distance=0.4cm and 1cm,
+  every node/.style={font=\small},
+  proc/.style={rectangle, rounded corners=3pt, draw=mcTealDark, fill=mcLight, text=mcGray, minimum width=4.8cm, minimum height=0.9cm, align=center, drop shadow},
+  dec/.style={diamond, draw=mcAmber, fill=white, text=mcGray, aspect=2.4, minimum width=4.8cm, align=center, drop shadow},
+  startstop/.style={rectangle, rounded corners=12pt, draw=mcTeal, fill=mcTeal, text=white, minimum width=3.4cm, minimum height=0.8cm, align=center},
+  arr/.style={-{Latex[length=2.2mm]}, draw=mcTealDark, thick}
+]
+  \node[startstop] (start) {Início};
+  \node[proc, below=of start] (msginicial) {Exibir "MedControl" no LCD};
+  \node[proc, below=of msginicial] (open) {Abrir compartimento (servo)};
+  \node[proc, below=of open] (alert) {Acender LED + Tocar alerta sonoro};
+  \node[proc, below=of alert] (lcd) {Mostrar "Aperte após tomar" no LCD};
+  \node[dec, below=of lcd] (confirm) {Botão pressionado?};
+  \node[proc, below=of confirm] (ok) {Mostrar "Confirmado!" e apagar alertas};
+  \node[proc, below=of ok] (close) {Fechar compartimento (servo)};
+  \node[proc, below=of close] (fim2) {Mostrar "Finalizado!"};
+  \node[startstop, below=of fim2] (end) {Fim do ciclo};
+
+  \draw[arr] (start) -- (msginicial);
+  \draw[arr] (msginicial) -- (open);
+  \draw[arr] (open) -- (alert);
+  \draw[arr] (alert) -- (lcd);
+  \draw[arr] (lcd) -- (confirm);
+  \draw[arr] (confirm.east) .. controls +(2.4,0) and +(2.4,0) .. (alert.east) node[midway, right, font=\scriptsize\color{mcGray}] {não, aguarda};
+  \draw[arr] (confirm) -- (ok) node[midway, right, xshift=2pt, font=\scriptsize\color{mcGray}] {sim};
+  \draw[arr] (ok) -- (close);
+  \draw[arr] (close) -- (fim2);
+  \draw[arr] (fim2) -- (end);
+\end{tikzpicture}
+}
+\caption{Fluxograma de funcionamento do MedControl.}
+\end{figure}
+\FloatBarrier
+
+\newpage
+% ============================================================
+\section{Ilustrações/Imagens do Protótipo Físico}
+% ============================================================
+
+Registro visual da evolução do desenvolvimento, da concepção até o protótipo final.
+
+\projimg{esboco-inicial.png}{Esboço/desenho inicial do projeto.}
+\projimg{montagem-fisica.png}{Montagem física da maquete em construção.}
+\projimg{prototipo-final.png}{Protótipo final montado.}
+
+\FloatBarrier
+\newpage
+% ============================================================
+\section{Dificuldades Encontradas}
+% ============================================================
+
+Durante o desenvolvimento do MedControl, a equipe enfrentou desafios técnicos comuns a projetos de sistemas embarcados:
+
+\begin{warnbox}[Principais dificuldades]
+\begin{itemize}[leftmargin=1.2em, itemsep=3pt]
+  \item Sincronização entre o acionamento do servomotor e a abertura da tampa do compartimento.
+  \item Ajuste do potenciômetro para garantir boa legibilidade do display LCD.
+  \item Organização e gerenciamento dos fios dentro da estrutura da maquete.
+  \item Dimensionamento adequado da estrutura física para acomodar os componentes.
+  \item Adaptação da lógica do projeto ao ambiente de simulação do Tinkercad.
+  \item Substituição do piezo (usado na simulação) pelo buzzer real na montagem física, mantendo a mesma lógica de firmware.
+\end{itemize}
+\end{warnbox}
+
+\FloatBarrier
+\newpage
+% ============================================================
+
+\section{Resultados Alcançados}
+% ============================================================
+
+\begin{resultbox}[Funcionamento do Protótipo]
+O sistema foi capaz de acionar automaticamente o servomotor para abrir o compartimento, emitir alerta sonoro pelo piezo/buzzer, acionar sinalização luminosa pelo LED e apresentar informações no display LCD. O compartimento permanece aberto até que o usuário pressione o botão de confirmação, momento em que o LCD exibe a mensagem de confirmação e o servo retorna à posição fechada. Os testes realizados no Tinkercad demonstraram o funcionamento correto da lógica desenvolvida, validando o projeto antes da construção física.
+\end{resultbox}
+
+\subsection{Limitações Atuais}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item O sistema não possui controle automático de horário (RTC); o ciclo de alerta é disparado a cada repetição do loop principal.
+  \item Ausência de persistência de dados (histórico de doses) em memória não-volátil.
+  \item Estrutura física limitada a um único compartimento.
+  \item Configuração remota (Wi-Fi) ainda não implementada.
+\end{itemize}
+
+\subsection{Melhorias Futuras}
+\begin{itemize}[leftmargin=1.4em, itemsep=2pt]
+  \item Adicionar módulo RTC para programação de horários reais de medicação.
+  \item Implementar configuração via Wi-Fi (ex.: ESP8266) para ajuste remoto de horários.
+  \item Adicionar aplicativo/mobile companion para acompanhamento remoto de doses.
+  \item Implementar registro de histórico com cartão SD ou EEPROM.
+  \item Expandir o número de compartimentos e adicionar sensores de presença do comprimido.
+\end{itemize}
+
+\FloatBarrier
+\newpage
+% ============================================================
+\section{Código-Fonte do Projeto}
+% ============================================================
+
+O código-fonte completo do firmware desenvolvido para o Arduino encontra-se disponível no repositório abaixo.
+
+\begin{specbox}[Repositório]
+\iGit\ \ \url{https://github.com/rafaesdra/medcontrol} 
+\end{specbox}
+
+\subsection{Firmware Completo}
+
+\begin{lstlisting}[style=arduino, language=C++, caption={Firmware do MedControl -- versão validada na simulação Tinkercad.}]
+#include <LiquidCrystal.h>
+#include <Servo.h>
+
+// LCD: RS, E, D4, D5, D6, D7
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+Servo servo;
+
+const int servoPin = 9;
+const int buzzerPin = 10;
+const int ledPin = 8;
+const int botaoPin = 7;
+
+// Notas
+#define DO 262
+#define RE 294
+#define MI 330
+#define FA 349
+#define SOL 392
+#define LA 440
+
+void tocarAlerta() {
+  int melodia[] = {
+    DO, DO, SOL, SOL, LA, LA, SOL,
+    FA, FA, MI, MI, RE, RE, DO
+  };
+  int duracao[] = {
+    300, 300, 300, 300, 300, 300, 600,
+    300, 300, 300, 300, 300, 300, 600
+  };
+  for (int i = 0; i < 14; i++) {
+    tone(buzzerPin, melodia[i], duracao[i]);
+    delay(duracao[i] + 50);
+  }
+  noTone(buzzerPin);
+}
+
+void setup() {
+  servo.attach(servoPin);
+  servo.write(0);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(botaoPin, INPUT_PULLUP);
+  digitalWrite(ledPin, LOW);
+
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
+  lcd.print("MedControl");
+  lcd.setCursor(0, 1);
+  lcd.print("Iniciando...");
+  delay(2000);
+}
+
+void loop() {
+  // Abre compartimento
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Hora remedio!");
+  servo.write(90);
+  digitalWrite(ledPin, HIGH);
+  tocarAlerta();
+  lcd.setCursor(0, 1);
+  lcd.print("Aperte apos tomar");
+
+  // Aguarda botao
+  while (digitalRead(botaoPin) == HIGH) {
+    // mantem o alerta piscando a cada alguns segundos
+    delay(100);
+  }
+
+  // Confirmacao
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Confirmado!");
+  digitalWrite(ledPin, LOW);
+  noTone(buzzerPin);
+  delay(1000);
+
+  // Fecha
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Fechando...");
+  servo.write(0);
+  delay(1500);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Finalizado!");
+  delay(5000);
+}
+\end{lstlisting}
+
+\begin{infobox}[Nota]
+O código acima corresponde à versão executada e validada na simulação do Tinkercad. Na montagem física do protótipo, o firmware é exatamente o mesmo; a única diferença de hardware é que o \textbf{piezo} usado na simulação é substituído por um \textbf{buzzer} real, sem qualquer alteração de código, pinagem ou lógica de funcionamento.
+\end{infobox}
+
+\newpage
+% ============================================================
+\section{Referências Bibliográficas}
+% ============================================================
+
+\begin{itemize}[leftmargin=1.4em, itemsep=4pt]
+  \item ARDUINO. \textit{Documentação Oficial}. Disponível em: \url{https://docs.arduino.cc}.
+  \item TINKERCAD. \textit{Circuits}. Disponível em: \url{https://www.tinkercad.com/things/ftH33SuNnAO-medcontrol?sharecode=Piq3hywgwHqZxrc1wp1MAs9D1p_18CyBY3xNzeBqxWE}.
+  \item Datasheet do Arduino Uno R3.
+  \item Datasheet do Servomotor (posicional).
+  \item Datasheet do Display LCD 16x2.
+  \item Datasheet do Buzzer/Piezo.
+\end{itemize}
+
+\vspace{2cm}
+\begin{center}
+\color{mcGray}\small
+--- Fim da documentação técnica do MedControl ---
+\end{center}
+
+\end{document}
